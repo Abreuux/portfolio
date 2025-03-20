@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Process Analytics Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --background-color: #f5f6fa;
+            --text-color: #2c3e50;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: 250px;
+            background-color: var(--primary-color);
+            padding: 20px;
+            color: white;
+        }
+
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+        }
+
+        .nav-link {
+            color: white;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .nav-link:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .nav-link.active {
+            background-color: var(--secondary-color);
+        }
+
+        .kpi-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .kpi-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--secondary-color);
+        }
+
+        .chart-container {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .process-flow {
+            height: 400px;
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .ml-insights {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .sigma-metrics {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 5px;
+        }
+
+        .status-good {
+            background-color: #2ecc71;
+        }
+
+        .status-warning {
+            background-color: #f1c40f;
+        }
+
+        .status-bad {
+            background-color: #e74c3c;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h3 class="mb-4">Process Analytics</h3>
+        <nav class="nav flex-column">
+            <a class="nav-link active" href="#overview">
+                <i class='bx bxs-dashboard'></i> Overview
+            </a>
+            <a class="nav-link" href="#process-mining">
+                <i class='bx bx-git-branch'></i> Process Mining
+            </a>
+            <a class="nav-link" href="#ml-analysis">
+                <i class='bx bx-brain'></i> ML Analysis
+            </a>
+            <a class="nav-link" href="#six-sigma">
+                <i class='bx bx-line-chart'></i> Six Sigma
+            </a>
+            <a class="nav-link" href="#settings">
+                <i class='bx bx-cog'></i> Settings
+            </a>
+        </nav>
+    </div>
+
+    <div class="main-content">
+        <div class="container-fluid">
+            <h2 class="mb-4">Process Analytics Dashboard</h2>
+            
+            <!-- KPIs -->
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <div class="kpi-card">
+                        <h5>Throughput Time</h5>
+                        <div class="kpi-value">45.2h</div>
+                        <div class="text-muted">Avg. process duration</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="kpi-card">
+                        <h5>Cycle Time</h5>
+                        <div class="kpi-value">38.5h</div>
+                        <div class="text-muted">Avg. activity duration</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="kpi-card">
+                        <h5>Bottleneck</h5>
+                        <div class="kpi-value">Negociação</div>
+                        <div class="text-muted">Longest waiting time</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="kpi-card">
+                        <h5>Sigma Level</h5>
+                        <div class="kpi-value">4.2</div>
+                        <div class="text-muted">Process capability</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Process Flow -->
+            <div class="row mb-4">
+                <div class="col-md-8">
+                    <div class="chart-container">
+                        <h4>Process Flow</h4>
+                        <div id="process-flow-chart"></div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="ml-insights">
+                        <h4>ML Insights</h4>
+                        <div class="mb-3">
+                            <h6>Next Activity Prediction</h6>
+                            <p>Fechamento (85% probability)</p>
+                        </div>
+                        <div class="mb-3">
+                            <h6>Estimated Duration</h6>
+                            <p>5.2 hours</p>
+                        </div>
+                        <div>
+                            <h6>Risk Assessment</h6>
+                            <p>Low risk of delay</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Control Charts -->
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <div class="chart-container">
+                        <h4>Process Control Chart</h4>
+                        <div id="control-chart"></div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="sigma-metrics">
+                        <h4>Six Sigma Metrics</h4>
+                        <div class="mb-3">
+                            <h6>Process Capability (Cp)</h6>
+                            <p>1.2</p>
+                        </div>
+                        <div class="mb-3">
+                            <h6>Mean</h6>
+                            <p>45.5</p>
+                        </div>
+                        <div>
+                            <h6>Standard Deviation</h6>
+                            <p>2.3</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Activity Table -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="chart-container">
+                        <h4>Recent Activities</h4>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Case ID</th>
+                                    <th>Activity</th>
+                                    <th>Resource</th>
+                                    <th>Duration</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Case-001</td>
+                                    <td>Negociação</td>
+                                    <td>Sales-01</td>
+                                    <td>2.5h</td>
+                                    <td><span class="status-indicator status-good"></span>Completed</td>
+                                </tr>
+                                <tr>
+                                    <td>Case-002</td>
+                                    <td>Proposta</td>
+                                    <td>Sales-02</td>
+                                    <td>1.8h</td>
+                                    <td><span class="status-indicator status-warning"></span>In Progress</td>
+                                </tr>
+                                <tr>
+                                    <td>Case-003</td>
+                                    <td>Fechamento</td>
+                                    <td>Sales-03</td>
+                                    <td>3.2h</td>
+                                    <td><span class="status-indicator status-bad"></span>Delayed</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Process Flow Chart
+        const processFlowData = {
+            nodes: {
+                pad: 15,
+                thickness: 20,
+                line: {
+                    color: "black",
+                    width: 0.5
+                },
+                label: {
+                    visible: true
+                },
+                color: "blue"
+            },
+            link: {
+                color: "#000000",
+                width: 0.5
+            },
+            type: "sankey",
+            orientation: "h",
+            valueformat: ".0f",
+            valuesuffix: "TWh",
+            arrangement: "snap",
+            yaxis: {
+                title: {
+                    text: ""
+                }
+            }
+        };
+
+        const processFlowLayout = {
+            title: "Process Flow Analysis",
+            font: {
+                size: 10
+            }
+        };
+
+        Plotly.newPlot('process-flow-chart', [processFlowData], processFlowLayout);
+
+        // Control Chart
+        const controlChartData = [{
+            type: 'scatter',
+            mode: 'lines+markers',
+            name: 'Process Values',
+            x: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+            y: [45, 42, 48, 43, 46, 44, 47, 45, 43, 46],
+            line: {
+                color: '#3498db'
+            }
+        }, {
+            type: 'scatter',
+            mode: 'lines',
+            name: 'UCL',
+            x: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+            y: [52, 52, 52, 52, 52, 52, 52, 52, 52, 52],
+            line: {
+                color: '#e74c3c',
+                dash: 'dash'
+            }
+        }, {
+            type: 'scatter',
+            mode: 'lines',
+            name: 'LCL',
+            x: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+            y: [38, 38, 38, 38, 38, 38, 38, 38, 38, 38],
+            line: {
+                color: '#e74c3c',
+                dash: 'dash'
+            }
+        }];
+
+        const controlChartLayout = {
+            title: 'Process Control Chart',
+            xaxis: {
+                title: 'Sample'
+            },
+            yaxis: {
+                title: 'Value'
+            },
+            showlegend: true
+        };
+
+        Plotly.newPlot('control-chart', controlChartData, controlChartLayout);
+    </script>
+</body>
+</html> 

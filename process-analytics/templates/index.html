@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Análise de Processos Comerciais - Six Sigma</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #1a237e;
+            --secondary-color: #0d47a1;
+            --accent-color: #2196f3;
+            --success-color: #4caf50;
+            --warning-color: #ff9800;
+            --danger-color: #f44336;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+        }
+
+        .sidebar {
+            background-color: var(--primary-color);
+            min-height: 100vh;
+            color: white;
+            padding: 20px;
+        }
+
+        .process-section {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .kpi-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .sigma-level {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: var(--accent-color);
+        }
+
+        .process-map {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .control-chart {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .dmaic-section {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .regional-performance {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 5px;
+        }
+
+        .status-success { background-color: var(--success-color); }
+        .status-warning { background-color: var(--warning-color); }
+        .status-danger { background-color: var(--danger-color); }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-2 sidebar">
+                <h4 class="mb-4">Análise de Processos</h4>
+                <nav class="nav flex-column">
+                    <a class="nav-link active" href="#">
+                        <i class='bx bxs-dashboard'></i> Visão Geral
+                    </a>
+                    <a class="nav-link" href="#">
+                        <i class='bx bx-line-chart'></i> DMAIC
+                    </a>
+                    <a class="nav-link" href="#">
+                        <i class='bx bx-map'></i> Mapeamento
+                    </a>
+                    <a class="nav-link" href="#">
+                        <i class='bx bx-bar-chart'></i> Controle
+                    </a>
+                    <a class="nav-link" href="#">
+                        <i class='bx bx-region'></i> Regionais
+                    </a>
+                </nav>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-md-10 p-4">
+                <!-- Header -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>Análise de Processos Comerciais</h2>
+                    <div class="btn-group">
+                        <button class="btn btn-outline-primary">Diário</button>
+                        <button class="btn btn-outline-primary active">Semanal</button>
+                        <button class="btn btn-outline-primary">Mensal</button>
+                    </div>
+                </div>
+
+                <!-- Process Overview -->
+                <div class="process-section">
+                    <h4>Visão Geral do Processo</h4>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="kpi-card">
+                                <h6>Nível Sigma</h6>
+                                <div class="sigma-level">4.2σ</div>
+                                <small class="text-muted">Meta: 5.0σ</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="kpi-card">
+                                <h6>Taxa de Conversão</h6>
+                                <h3>32.5%</h3>
+                                <span class="text-success">+2.1%</span>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="kpi-card">
+                                <h6>Tempo Médio de Venda</h6>
+                                <h3>45 dias</h3>
+                                <span class="text-danger">+5 dias</span>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="kpi-card">
+                                <h6>Ticket Médio</h6>
+                                <h3>R$ 25.000</h3>
+                                <span class="text-success">+8.3%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Process Map -->
+                <div class="process-map">
+                    <h4>Mapeamento do Processo Comercial</h4>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div id="process-flow" style="height: 300px;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Control Charts -->
+                <div class="control-chart">
+                    <h4>Análise de Controle</h4>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div id="conversion-chart" style="height: 300px;"></div>
+                        </div>
+                        <div class="col-md-6">
+                            <div id="cycle-time-chart" style="height: 300px;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DMAIC Analysis -->
+                <div class="dmaic-section">
+                    <h4>Análise DMAIC</h4>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Fase</th>
+                                            <th>Status</th>
+                                            <th>Métricas</th>
+                                            <th>Melhorias</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Define</td>
+                                            <td><span class="status-indicator status-success"></span> Concluído</td>
+                                            <td>Nível Sigma: 4.2</td>
+                                            <td>Identificados 3 gargalos</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Measure</td>
+                                            <td><span class="status-indicator status-success"></span> Concluído</td>
+                                            <td>Dados coletados</td>
+                                            <td>Mapeamento completo</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Analyze</td>
+                                            <td><span class="status-indicator status-warning"></span> Em Andamento</td>
+                                            <td>Análise em curso</td>
+                                            <td>Identificando causas</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Improve</td>
+                                            <td><span class="status-indicator status-danger"></span> Pendente</td>
+                                            <td>-</td>
+                                            <td>-</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Control</td>
+                                            <td><span class="status-indicator status-danger"></span> Pendente</td>
+                                            <td>-</td>
+                                            <td>-</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Regional Performance -->
+                <div class="regional-performance">
+                    <h4>Desempenho por Regional</h4>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div id="regional-chart" style="height: 300px;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Process Flow Chart
+        const processFlowData = [{
+            type: "sankey",
+            orientation: "h",
+            node: {
+                pad: 15,
+                thickness: 20,
+                line: {
+                    color: "black",
+                    width: 0.5
+                },
+                label: ["Prospecção", "Qualificação", "Proposta", "Negociação", "Fechamento", "Pós-Venda"],
+                color: ["#1a237e", "#0d47a1", "#2196f3", "#64b5f6", "#90caf9", "#bbdefb"]
+            },
+            link: {
+                source: [0, 1, 2, 3, 4],
+                target: [1, 2, 3, 4, 5],
+                value: [1000, 800, 600, 400, 200]
+            }
+        }];
+
+        // Control Charts
+        const conversionData = [{
+            y: [30, 32, 28, 35, 33, 31, 32, 34, 33, 32, 35, 32],
+            type: 'scatter',
+            mode: 'lines+markers',
+            name: 'Taxa de Conversão'
+        }];
+
+        const cycleTimeData = [{
+            y: [40, 42, 45, 43, 41, 44, 46, 43, 42, 45, 44, 45],
+            type: 'scatter',
+            mode: 'lines+markers',
+            name: 'Tempo de Ciclo (dias)'
+        }];
+
+        // Regional Performance Chart
+        const regionalData = [{
+            type: 'bar',
+            x: ['Norte', 'Nordeste', 'Centro-Oeste', 'Sudeste', 'Sul', 'Norte', 'Nordeste'],
+            y: [85, 92, 78, 95, 88, 82, 90],
+            name: 'Taxa de Conversão (%)'
+        }];
+
+        // Plot charts
+        Plotly.newPlot('process-flow', processFlowData);
+        Plotly.newPlot('conversion-chart', conversionData);
+        Plotly.newPlot('cycle-time-chart', cycleTimeData);
+        Plotly.newPlot('regional-chart', regionalData);
+    </script>
+</body>
+</html> 

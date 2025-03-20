@@ -1,0 +1,56 @@
+{
+    "model_version": "v1.0.0",
+    "model_type": "RandomForestClassifier",
+    "model_parameters": {
+        "n_estimators": 100,
+        "max_depth": 10,
+        "min_samples_split": 5,
+        "min_samples_leaf": 2,
+        "max_features": "sqrt",
+        "bootstrap": true,
+        "random_state": 42
+    },
+    "feature_engineering": {
+        "numerical_features": ["duration", "weekday", "hour"],
+        "categorical_features": ["activity", "resource"],
+        "encoding_method": "label",
+        "scaling_method": "standard"
+    },
+    "training_config": {
+        "train_size": 0.7,
+        "validation_size": 0.15,
+        "test_size": 0.15,
+        "random_state": 42,
+        "stratify": true
+    },
+    "monitoring_config": {
+        "drift_threshold": 0.1,
+        "confidence_threshold": 0.8,
+        "memory_threshold": 0.8,
+        "latency_threshold": 0.1,
+        "retraining_trigger": {
+            "drift_detected": true,
+            "performance_degraded": true,
+            "data_size_increased": true
+        }
+    },
+    "deployment_config": {
+        "model_path": "models/",
+        "model_format": "joblib",
+        "batch_size": 100,
+        "max_workers": 4,
+        "timeout": 30
+    },
+    "logging_config": {
+        "log_level": "INFO",
+        "log_file": "logs/model.log",
+        "max_file_size": 10485760,
+        "backup_count": 5
+    },
+    "api_config": {
+        "host": "0.0.0.0",
+        "port": 5000,
+        "debug": false,
+        "timeout": 30
+    }
+} 

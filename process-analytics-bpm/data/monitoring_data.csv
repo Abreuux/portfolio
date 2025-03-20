@@ -1,0 +1,21 @@
+case_id,activity,resource,timestamp,duration,weekday,hour,next_activity,risk,predicted_next_activity,predicted_duration,predicted_risk,model_confidence
+Case-026,Prospecção,Sales-01,2024-01-11 09:00:00,2.5,3,9,Qualificação,0,Qualificação,1.8,0,0.95
+Case-026,Qualificação,Sales-01,2024-01-11 11:30:00,1.8,3,11,Negociação,0,Negociação,3.2,0,0.92
+Case-026,Negociação,Sales-01,2024-01-12 14:00:00,3.2,4,14,Proposta,0,Proposta,2.0,0,0.88
+Case-026,Proposta,Sales-01,2024-01-13 10:00:00,2.0,5,10,Fechamento,0,Fechamento,0.0,0,0.85
+Case-027,Prospecção,Sales-02,2024-01-11 10:00:00,2.0,3,10,Qualificação,0,Qualificação,1.5,0,0.94
+Case-027,Qualificação,Sales-02,2024-01-11 13:00:00,1.5,3,13,Negociação,0,Negociação,4.0,1,0.91
+Case-027,Negociação,Sales-02,2024-01-12 09:30:00,4.0,4,9,Proposta,1,Proposta,2.5,1,0.87
+Case-027,Proposta,Sales-02,2024-01-13 11:00:00,2.5,5,11,Rejeição,1,Rejeição,0.0,1,0.84
+Case-028,Prospecção,Sales-03,2024-01-11 11:00:00,2.8,3,11,Qualificação,0,Qualificação,1.2,0,0.93
+Case-028,Qualificação,Sales-03,2024-01-11 14:30:00,1.2,3,14,Negociação,0,Negociação,3.5,0,0.90
+Case-028,Negociação,Sales-03,2024-01-12 10:00:00,3.5,4,10,Proposta,0,Proposta,2.8,0,0.86
+Case-028,Proposta,Sales-03,2024-01-13 13:00:00,2.8,5,13,Fechamento,0,Fechamento,0.0,0,0.83
+Case-029,Prospecção,Sales-01,2024-01-12 09:00:00,2.2,4,9,Qualificação,0,Qualificação,1.5,0,0.92
+Case-029,Qualificação,Sales-01,2024-01-12 11:30:00,1.5,4,11,Negociação,0,Negociação,3.8,1,0.89
+Case-029,Negociação,Sales-01,2024-01-13 14:00:00,3.8,5,14,Proposta,1,Proposta,2.5,1,0.85
+Case-029,Proposta,Sales-01,2024-01-14 10:00:00,2.5,6,10,Fechamento,0,Fechamento,0.0,0,0.82
+Case-030,Prospecção,Sales-02,2024-01-12 10:00:00,2.5,4,10,Qualificação,0,Qualificação,1.8,0,0.91
+Case-030,Qualificação,Sales-02,2024-01-12 13:00:00,1.8,4,13,Negociação,0,Negociação,3.5,0,0.88
+Case-030,Negociação,Sales-02,2024-01-13 09:30:00,3.5,5,9,Proposta,0,Proposta,2.8,0,0.84
+Case-030,Proposta,Sales-02,2024-01-14 11:00:00,2.8,6,11,Rejeição,1,Rejeição,0.0,1,0.81 

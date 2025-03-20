@@ -1,0 +1,21 @@
+case_id,activity,resource,timestamp,duration,weekday,hour,next_activity,risk
+Case-021,Prospecção,Sales-01,2024-01-09 09:00:00,2.5,1,9,Qualificação,0
+Case-021,Qualificação,Sales-01,2024-01-09 11:30:00,1.8,1,11,Negociação,0
+Case-021,Negociação,Sales-01,2024-01-10 14:00:00,3.2,2,14,Proposta,0
+Case-021,Proposta,Sales-01,2024-01-11 10:00:00,2.0,3,10,Fechamento,0
+Case-022,Prospecção,Sales-02,2024-01-09 10:00:00,2.0,1,10,Qualificação,0
+Case-022,Qualificação,Sales-02,2024-01-09 13:00:00,1.5,1,13,Negociação,0
+Case-022,Negociação,Sales-02,2024-01-10 09:30:00,4.0,2,9,Proposta,1
+Case-022,Proposta,Sales-02,2024-01-11 11:00:00,2.5,3,11,Rejeição,1
+Case-023,Prospecção,Sales-03,2024-01-09 11:00:00,2.8,1,11,Qualificação,0
+Case-023,Qualificação,Sales-03,2024-01-09 14:30:00,1.2,1,14,Negociação,0
+Case-023,Negociação,Sales-03,2024-01-10 10:00:00,3.5,2,10,Proposta,0
+Case-023,Proposta,Sales-03,2024-01-11 13:00:00,2.8,3,13,Fechamento,0
+Case-024,Prospecção,Sales-01,2024-01-10 09:00:00,2.2,2,9,Qualificação,0
+Case-024,Qualificação,Sales-01,2024-01-10 11:30:00,1.5,2,11,Negociação,0
+Case-024,Negociação,Sales-01,2024-01-11 14:00:00,3.8,3,14,Proposta,1
+Case-024,Proposta,Sales-01,2024-01-12 10:00:00,2.5,4,10,Fechamento,0
+Case-025,Prospecção,Sales-02,2024-01-10 10:00:00,2.5,2,10,Qualificação,0
+Case-025,Qualificação,Sales-02,2024-01-10 13:00:00,1.8,2,13,Negociação,0
+Case-025,Negociação,Sales-02,2024-01-11 09:30:00,3.5,3,9,Proposta,0
+Case-025,Proposta,Sales-02,2024-01-12 11:00:00,2.8,4,11,Rejeição,1 

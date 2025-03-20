@@ -1,0 +1,49 @@
+spring:
+  application:
+    name: billing-orchestrator
+  datasource:
+    url: jdbc:postgresql://localhost:5432/billing_orchestrator
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+camunda:
+  zeebe:
+    client:
+      broker:
+        gateway-address: localhost:26500
+      security:
+        plaintext: true
+    worker:
+      default-name: billing-worker
+      threads: 3
+      timeout: 5s
+      poll-interval: 100ms
+      max-jobs-active: 32
+
+stripe:
+  secret-key: ${STRIPE_SECRET_KEY}
+  webhook-secret: ${STRIPE_WEBHOOK_SECRET}
+
+protheus:
+  base-url: ${PROTHEUS_BASE_URL}
+  api-key: ${PROTHEUS_API_KEY}
+
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+
+logging:
+  level:
+    root: INFO
+    com.brunoxabreu.billing_orchestrator: DEBUG
+    io.camunda.zeebe: INFO 

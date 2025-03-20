@@ -1,0 +1,55 @@
+spring:
+  application:
+    name: lead-enrichment
+  datasource:
+    url: jdbc:postgresql://localhost:5432/lead_enrichment
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+camunda.bpm:
+  admin-user:
+    id: demo
+    password: demo
+    firstName: Demo
+  filter:
+    create: All tasks
+  webapp:
+    application-path: /camunda
+  default-serialization-format: application/json
+  job-execution:
+    retries: 3
+  metrics:
+    enabled: true
+    db-reporter-activate: true
+
+server:
+  port: 8081
+  servlet:
+    context-path: /api
+
+logging:
+  level:
+    com.brunoxabreu: DEBUG
+    org.camunda: INFO
+    org.springframework: INFO
+
+# Configurações dos serviços de busca
+services:
+  linkedin:
+    api-key: ${LINKEDIN_API_KEY}
+    base-url: https://api.linkedin.com/v2
+  clearbit:
+    api-key: ${CLEARBIT_API_KEY}
+    base-url: https://person.clearbit.com/v1
+  hunter:
+    api-key: ${HUNTER_API_KEY}
+    base-url: https://api.hunter.io/v2 

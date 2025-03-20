@@ -1,0 +1,20 @@
+timestamp,level,message,model_version,data_source,data_size,processing_time,error_type,error_message,stack_trace
+2024-01-11 09:00:00,INFO,Model training started,v1.0.0,training_data.csv,1000,120,None,None,None
+2024-01-11 09:02:00,INFO,Data preprocessing completed,v1.0.0,training_data.csv,1000,120,None,None,None
+2024-01-11 09:04:00,INFO,Feature engineering completed,v1.0.0,training_data.csv,1000,120,None,None,None
+2024-01-11 09:06:00,INFO,Model training completed,v1.0.0,training_data.csv,1000,120,None,None,None
+2024-01-11 09:08:00,INFO,Model evaluation completed,v1.0.0,validation_data.csv,200,5,None,None,None
+2024-01-11 09:10:00,INFO,Model deployed to production,v1.0.0,None,None,10,None,None,None
+2024-01-11 09:15:00,WARNING,High prediction latency detected,v1.0.0,production_data.csv,100,0.15,None,None,None
+2024-01-11 09:20:00,ERROR,Data drift detected,v1.0.0,production_data.csv,100,0.05,DataDriftError,Feature distribution has changed significantly,None
+2024-01-11 09:25:00,INFO,Model retraining triggered,v1.0.0,training_data.csv,1000,120,None,None,None
+2024-01-11 09:27:00,INFO,Data preprocessing completed,v1.0.0,training_data.csv,1000,120,None,None,None
+2024-01-11 09:29:00,INFO,Feature engineering completed,v1.0.0,training_data.csv,1000,120,None,None,None
+2024-01-11 09:31:00,INFO,Model training completed,v1.0.0,training_data.csv,1000,120,None,None,None
+2024-01-11 09:33:00,INFO,Model evaluation completed,v1.0.0,validation_data.csv,200,5,None,None,None
+2024-01-11 09:35:00,INFO,Model deployed to production,v1.0.0,None,None,10,None,None,None
+2024-01-11 09:40:00,INFO,Performance metrics updated,v1.0.0,monitoring_data.csv,50,0.05,None,None,None
+2024-01-11 09:45:00,WARNING,Model confidence threshold exceeded,v1.0.0,production_data.csv,100,0.05,None,None,None
+2024-01-11 09:50:00,ERROR,Memory usage high,v1.0.0,production_data.csv,100,0.05,MemoryError,Model memory usage exceeds 80%,None
+2024-01-11 09:55:00,INFO,Model garbage collection completed,v1.0.0,None,None,5,None,None,None
+2024-01-11 10:00:00,INFO,Model health check completed,v1.0.0,None,None,5,None,None,None 

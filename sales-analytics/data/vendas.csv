@@ -1,0 +1,11 @@
+data_venda,valor_venda,produto,categoria,vendedor
+2024-01-01,150.50,Notebook Dell,Informática,João Silva
+2024-01-01,89.90,Smartphone Samsung,Eletrônicos,Maria Santos
+2024-01-02,299.90,Smart TV LG,Eletrônicos,Pedro Oliveira
+2024-01-02,45.00,Fone de Ouvido,Periféricos,Ana Costa
+2024-01-03,1299.90,Notebook Lenovo,Informática,João Silva
+2024-01-03,79.90,Teclado Mecânico,Periféricos,Maria Santos
+2024-01-04,199.90,Monitor Dell,Periféricos,Pedro Oliveira
+2024-01-04,159.90,Smartwatch,Eletrônicos,Ana Costa
+2024-01-05,899.90,Notebook HP,Informática,João Silva
+2024-01-05,129.90,Mouse Gamer,Periféricos,Maria Santos 

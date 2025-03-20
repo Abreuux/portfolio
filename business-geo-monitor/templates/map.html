@@ -1,0 +1,219 @@
+{% load static %}
+{% load leaflet_tags %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Monitoramento Geográfico de Negócios</title>
+    {% leaflet_js %}
+    {% leaflet_css %}
+    <style>
+        #map {
+            height: 100vh;
+            width: 100%;
+        }
+        .info-box {
+            padding: 6px 8px;
+            font: 14px/16px Arial, Helvetica, sans-serif;
+            background: white;
+            background: rgba(255,255,255,0.8);
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+            border-radius: 5px;
+        }
+        .legend {
+            line-height: 18px;
+            color: #555;
+        }
+        .legend i {
+            width: 18px;
+            height: 18px;
+            float: left;
+            margin-right: 8px;
+            opacity: 0.7;
+        }
+        .control-panel {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 1000;
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+        }
+        .filter-group {
+            margin-bottom: 10px;
+        }
+        .filter-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .filter-group select, .filter-group input {
+            width: 100%;
+            padding: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    <div class="control-panel">
+        <h3>Filtros</h3>
+        <div class="filter-group">
+            <label for="business-type">Tipo de Negócio</label>
+            <select id="business-type">
+                <option value="">Todos</option>
+                <option value="restaurante">Restaurante</option>
+                <option value="café">Café</option>
+                <option value="loja">Loja</option>
+                <option value="serviço">Serviço</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label for="city">Cidade</label>
+            <select id="city">
+                <option value="">Todas</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label for="state">Estado</label>
+            <select id="state">
+                <option value="">Todos</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label for="radius">Raio de Busca (km)</label>
+            <input type="number" id="radius" min="1" max="100" value="10">
+        </div>
+        <button onclick="applyFilters()">Aplicar Filtros</button>
+    </div>
+
+    <script>
+        // Inicializa o mapa
+        var map = L.map('map').setView([-23.5505, -46.6333], 12);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        // Adiciona controles de camada
+        var businessLayers = {};
+        var info = L.control({position: 'bottomright'});
+        info.onAdd = function (map) {
+            var div = L.DomUtil.create('div', 'info-box');
+            div.innerHTML = '<h4>Legenda</h4>';
+            return div;
+        };
+        info.addTo(map);
+
+        // Função para carregar dados
+        function loadBusinesses() {
+            fetch('/api/businesses/')
+                .then(response => response.json())
+                .then(data => {
+                    // Limpa camadas existentes
+                    Object.values(businessLayers).forEach(layer => map.removeLayer(layer));
+                    businessLayers = {};
+
+                    // Adiciona marcadores
+                    data.features.forEach(feature => {
+                        var business = feature.properties;
+                        var marker = L.marker(feature.geometry.coordinates.reverse())
+                            .bindPopup(`
+                                <h3>${business.name}</h3>
+                                <p>${business.address}</p>
+                                <p>${business.city} - ${business.state}</p>
+                                <p>${business.business_type}</p>
+                                <p>Faturamento: R$ ${business.revenue}</p>
+                                <p>Clientes: ${business.customer_count}</p>
+                            `)
+                            .addTo(map);
+
+                        // Adiciona círculo de cobertura
+                        var circle = L.circle(feature.geometry.coordinates.reverse(), {
+                            color: 'red',
+                            fillColor: '#f03',
+                            fillOpacity: 0.2,
+                            radius: business.radius * 1000
+                        }).addTo(map);
+
+                        businessLayers[business.id] = L.layerGroup([marker, circle]);
+                    });
+
+                    // Atualiza legenda
+                    updateLegend();
+                });
+        }
+
+        // Função para aplicar filtros
+        function applyFilters() {
+            var businessType = document.getElementById('business-type').value;
+            var city = document.getElementById('city').value;
+            var state = document.getElementById('state').value;
+            var radius = document.getElementById('radius').value;
+
+            var url = '/api/businesses/';
+            var params = new URLSearchParams();
+            
+            if (businessType) params.append('business_type', businessType);
+            if (city) params.append('city', city);
+            if (state) params.append('state', state);
+            if (radius) params.append('radius', radius);
+
+            if (params.toString()) {
+                url += '?' + params.toString();
+            }
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    // Limpa camadas existentes
+                    Object.values(businessLayers).forEach(layer => map.removeLayer(layer));
+                    businessLayers = {};
+
+                    // Adiciona marcadores filtrados
+                    data.features.forEach(feature => {
+                        var business = feature.properties;
+                        var marker = L.marker(feature.geometry.coordinates.reverse())
+                            .bindPopup(`
+                                <h3>${business.name}</h3>
+                                <p>${business.address}</p>
+                                <p>${business.city} - ${business.state}</p>
+                                <p>${business.business_type}</p>
+                                <p>Faturamento: R$ ${business.revenue}</p>
+                                <p>Clientes: ${business.customer_count}</p>
+                            `)
+                            .addTo(map);
+
+                        var circle = L.circle(feature.geometry.coordinates.reverse(), {
+                            color: 'red',
+                            fillColor: '#f03',
+                            fillOpacity: 0.2,
+                            radius: business.radius * 1000
+                        }).addTo(map);
+
+                        businessLayers[business.id] = L.layerGroup([marker, circle]);
+                    });
+
+                    updateLegend();
+                });
+        }
+
+        // Função para atualizar legenda
+        function updateLegend() {
+            var legend = document.querySelector('.info-box');
+            var html = '<h4>Legenda</h4>';
+            
+            Object.values(businessLayers).forEach(layer => {
+                var business = layer.getLayers()[0].getPopup().getContent();
+                var name = business.match(/<h3>(.*?)<\/h3>/)[1];
+                html += `<div class="legend">
+                    <i style="background: #f03"></i> ${name}<br>
+                </div>`;
+            });
+            
+            legend.innerHTML = html;
+        }
+
+        // Carrega dados iniciais
+        loadBusinesses();
+    </script>
+</body>
+</html> 

@@ -1,0 +1,32 @@
+groups:
+  - name: logistics_recording_rules
+    rules:
+      - record: job:http_requests_total:rate5m
+        expr: sum(rate(http_requests_total[5m])) by (job)
+
+      - record: job:http_request_duration_seconds:avg5m
+        expr: rate(http_request_duration_seconds_sum[5m]) / rate(http_request_duration_seconds_count[5m])
+
+      - record: job:error_rate:ratio5m
+        expr: sum(rate(http_requests_total{status_code=~"5.."}[5m])) by (job) / sum(rate(http_requests_total[5m])) by (job)
+
+      - record: instance:memory_usage:bytes
+        expr: process_resident_memory_bytes
+
+      - record: instance:cpu_usage:percent
+        expr: rate(process_cpu_seconds_total[5m]) * 100
+
+      - record: job:database_query_duration:avg5m
+        expr: rate(database_query_duration_seconds_sum[5m]) / rate(database_query_duration_seconds_count[5m])
+
+      - record: instance:network_receive_bytes:rate5m
+        expr: rate(node_network_receive_bytes_total[5m])
+
+      - record: instance:network_transmit_bytes:rate5m
+        expr: rate(node_network_transmit_bytes_total[5m])
+
+      - record: instance:disk_usage:percent
+        expr: (1 - node_filesystem_avail_bytes / node_filesystem_size_bytes) * 100
+
+      - record: job:request_success_rate:ratio5m
+        expr: sum(rate(http_requests_total{status_code=~"2.."}[5m])) by (job) / sum(rate(http_requests_total[5m])) by (job) 

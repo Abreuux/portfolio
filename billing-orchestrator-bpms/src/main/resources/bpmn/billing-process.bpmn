@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
+                  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+                  xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+                  xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+                  xmlns:zeebe="http://camunda.org/schema/zeebe/1.0"
+                  xmlns:modeler="http://camunda.org/schema/modeler/1.0"
+                  id="Definitions_0"
+                  targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="billing-process" name="Processo de Faturamento" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1" name="Início">
+      <bpmn:outgoing>Flow_1</bpmn:outgoing>
+    </bpmn:startEvent>
+    
+    <bpmn:sequenceFlow id="Flow_1" sourceRef="StartEvent_1" targetRef="Task_ValidateSubscription" />
+    
+    <bpmn:serviceTask id="Task_ValidateSubscription" name="Validar Assinatura">
+      <bpmn:incoming>Flow_1</bpmn:incoming>
+      <bpmn:outgoing>Flow_2</bpmn:outgoing>
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="validate-subscription" />
+      </bpmn:extensionElements>
+    </bpmn:serviceTask>
+    
+    <bpmn:sequenceFlow id="Flow_2" sourceRef="Task_ValidateSubscription" targetRef="Gateway_CheckStatus" />
+    
+    <bpmn:exclusiveGateway id="Gateway_CheckStatus" name="Verificar Status">
+      <bpmn:incoming>Flow_2</bpmn:incoming>
+      <bpmn:outgoing>Flow_3</bpmn:outgoing>
+      <bpmn:outgoing>Flow_4</bpmn:outgoing>
+      <bpmn:outgoing>Flow_5</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    
+    <bpmn:sequenceFlow id="Flow_3" sourceRef="Gateway_CheckStatus" targetRef="Task_CreateInvoice">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${status == 'active'}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    
+    <bpmn:sequenceFlow id="Flow_4" sourceRef="Gateway_CheckStatus" targetRef="Task_HandleCancellation">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${status == 'cancelled'}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    
+    <bpmn:sequenceFlow id="Flow_5" sourceRef="Gateway_CheckStatus" targetRef="Task_HandleUpdate">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${status == 'updated'}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    
+    <bpmn:serviceTask id="Task_CreateInvoice" name="Criar Fatura">
+      <bpmn:incoming>Flow_3</bpmn:incoming>
+      <bpmn:outgoing>Flow_6</bpmn:outgoing>
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="create-invoice" />
+      </bpmn:extensionElements>
+    </bpmn:serviceTask>
+    
+    <bpmn:sequenceFlow id="Flow_6" sourceRef="Task_CreateInvoice" targetRef="Gateway_PaymentStatus" />
+    
+    <bpmn:exclusiveGateway id="Gateway_PaymentStatus" name="Status do Pagamento">
+      <bpmn:incoming>Flow_6</bpmn:incoming>
+      <bpmn:outgoing>Flow_7</bpmn:outgoing>
+      <bpmn:outgoing>Flow_8</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    
+    <bpmn:sequenceFlow id="Flow_7" sourceRef="Gateway_PaymentStatus" targetRef="Task_HandlePaymentSuccess">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${paymentStatus == 'success'}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    
+    <bpmn:sequenceFlow id="Flow_8" sourceRef="Gateway_PaymentStatus" targetRef="Task_HandlePaymentFailure">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${paymentStatus == 'failure'}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    
+    <bpmn:serviceTask id="Task_HandlePaymentSuccess" name="Processar Pagamento Bem-sucedido">
+      <bpmn:incoming>Flow_7</bpmn:incoming>
+      <bpmn:outgoing>Flow_9</bpmn:outgoing>
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="handle-payment-success" />
+      </bpmn:extensionElements>
+    </bpmn:serviceTask>
+    
+    <bpmn:serviceTask id="Task_HandlePaymentFailure" name="Processar Falha de Pagamento">
+      <bpmn:incoming>Flow_8</bpmn:incoming>
+      <bpmn:outgoing>Flow_10</bpmn:outgoing>
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="handle-payment-failure" />
+      </bpmn:extensionElements>
+    </bpmn:serviceTask>
+    
+    <bpmn:sequenceFlow id="Flow_9" sourceRef="Task_HandlePaymentSuccess" targetRef="Task_NotifyCustomer" />
+    <bpmn:sequenceFlow id="Flow_10" sourceRef="Task_HandlePaymentFailure" targetRef="Task_NotifyCustomer" />
+    
+    <bpmn:serviceTask id="Task_NotifyCustomer" name="Notificar Cliente">
+      <bpmn:incoming>Flow_9</bpmn:incoming>
+      <bpmn:incoming>Flow_10</bpmn:incoming>
+      <bpmn:outgoing>Flow_11</bpmn:outgoing>
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="notify-customer" />
+      </bpmn:extensionElements>
+    </bpmn:serviceTask>
+    
+    <bpmn:sequenceFlow id="Flow_11" sourceRef="Task_NotifyCustomer" targetRef="Task_HandleCancellation" />
+    
+    <bpmn:serviceTask id="Task_HandleCancellation" name="Processar Cancelamento">
+      <bpmn:incoming>Flow_4</bpmn:incoming>
+      <bpmn:incoming>Flow_11</bpmn:incoming>
+      <bpmn:outgoing>Flow_12</bpmn:outgoing>
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="handle-cancellation" />
+      </bpmn:extensionElements>
+    </bpmn:serviceTask>
+    
+    <bpmn:serviceTask id="Task_HandleUpdate" name="Processar Atualização">
+      <bpmn:incoming>Flow_5</bpmn:incoming>
+      <bpmn:outgoing>Flow_13</bpmn:outgoing>
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="handle-update" />
+      </bpmn:extensionElements>
+    </bpmn:serviceTask>
+    
+    <bpmn:sequenceFlow id="Flow_12" sourceRef="Task_HandleCancellation" targetRef="EndEvent_1" />
+    <bpmn:sequenceFlow id="Flow_13" sourceRef="Task_HandleUpdate" targetRef="EndEvent_1" />
+    
+    <bpmn:endEvent id="EndEvent_1" name="Fim">
+      <bpmn:incoming>Flow_12</bpmn:incoming>
+      <bpmn:incoming>Flow_13</bpmn:incoming>
+    </bpmn:endEvent>
+  </bpmn:process>
+  
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="billing-process">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="152" y="102" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_Task_ValidateSubscription_2" bpmnElement="Task_ValidateSubscription">
+        <dc:Bounds x="240" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_Gateway_CheckStatus_2" bpmnElement="Gateway_CheckStatus">
+        <dc:Bounds x="392" y="95" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_Task_CreateInvoice_2" bpmnElement="Task_CreateInvoice">
+        <dc:Bounds x="494" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_Gateway_PaymentStatus_2" bpmnElement="Gateway_PaymentStatus">
+        <dc:Bounds x="646" y="95" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_Task_HandlePaymentSuccess_2" bpmnElement="Task_HandlePaymentSuccess">
+        <dc:Bounds x="748" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_Task_HandlePaymentFailure_2" bpmnElement="Task_HandlePaymentFailure">
+        <dc:Bounds x="748" y="200" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_Task_NotifyCustomer_2" bpmnElement="Task_NotifyCustomer">
+        <dc:Bounds x="900" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_Task_HandleCancellation_2" bpmnElement="Task_HandleCancellation">
+        <dc:Bounds x="1052" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_Task_HandleUpdate_2" bpmnElement="Task_HandleUpdate">
+        <dc:Bounds x="1052" y="200" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_EndEvent_2" bpmnElement="EndEvent_1">
+        <dc:Bounds x="1204" y="102" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      
+      <bpmndi:BPMNEdge id="Flow_1" bpmnElement="Flow_1">
+        <di:waypoint x="188" y="120" />
+        <di:waypoint x="240" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_2" bpmnElement="Flow_2">
+        <di:waypoint x="340" y="120" />
+        <di:waypoint x="392" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_3" bpmnElement="Flow_3">
+        <di:waypoint x="442" y="120" />
+        <di:waypoint x="494" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_4" bpmnElement="Flow_4">
+        <di:waypoint x="417" y="145" />
+        <di:waypoint x="417" y="240" />
+        <di:waypoint x="1052" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_5" bpmnElement="Flow_5">
+        <di:waypoint x="417" y="95" />
+        <di:waypoint x="417" y="200" />
+        <di:waypoint x="1052" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_6" bpmnElement="Flow_6">
+        <di:waypoint x="594" y="120" />
+        <di:waypoint x="646" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_7" bpmnElement="Flow_7">
+        <di:waypoint x="696" y="120" />
+        <di:waypoint x="748" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_8" bpmnElement="Flow_8">
+        <di:waypoint x="671" y="145" />
+        <di:waypoint x="671" y="240" />
+        <di:waypoint x="748" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_9" bpmnElement="Flow_9">
+        <di:waypoint x="848" y="120" />
+        <di:waypoint x="900" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_10" bpmnElement="Flow_10">
+        <di:waypoint x="848" y="240" />
+        <di:waypoint x="900" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_11" bpmnElement="Flow_11">
+        <di:waypoint x="1000" y="120" />
+        <di:waypoint x="1052" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_12" bpmnElement="Flow_12">
+        <di:waypoint x="1152" y="120" />
+        <di:waypoint x="1204" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_13" bpmnElement="Flow_13">
+        <di:waypoint x="1152" y="240" />
+        <di:waypoint x="1204" y="240" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions> 
