@@ -105,6 +105,6 @@ Este projeto está sob a licença MIT. Veja o arquivo `LICENSE` para mais detalh
 
 ## Contato
 
-Gabriel Abreu - [LinkedIn](https://www.linkedin.com/in/gabriel-abreu-developer/)
+Bruno Abreu - [LinkedIn](https://www.linkedin.com/in/brunoxabreu/)
 
 Link do Projeto: [https://github.com/Abreuux/portfolio](https://github.com/Abreuux/portfolio) 
